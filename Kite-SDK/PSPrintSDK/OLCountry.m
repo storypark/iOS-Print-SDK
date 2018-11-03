@@ -54,15 +54,7 @@ BOOL _inEurope;
 }
 
 + (OLCountry *)countryForCurrentLocale {
-    NSString *countryCode = [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
-    OLCountry *country = [OLCountry countryForCode:countryCode];
-    
-    if (country == nil) {
-        // fallback to GB in the worst case as it's probably the system locale.
-        return [OLCountry countryForCode:@"GBR"];
-    }
-    
-    return country;
+    return [OLCountry countryForCode: @"USA"];
 }
 
 + (OLCountry *)countryForName:(NSString *)name {
