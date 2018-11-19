@@ -382,41 +382,6 @@ typedef enum {
         s = [s stringByAppendingString:[NSString stringWithFormat:@"**%@**\n%@\n\n", priceString, self.unitCost]];
     }
     
-    //Add shipping info
-    NSString *shippingString = NSLocalizedStringFromTableInBundle(@"Shipping", @"KitePrintSDK", [OLKiteUtils kiteLocalizationBundle], @"");
-    NSString *fromString = NSLocalizedStringFromTableInBundle(@"From", @"KitePrintSDK", [OLKiteUtils kiteLocalizationBundle], @"");
-    NSString *shippingLabel = [NSString stringWithFormat:@"**%@**\n", shippingString];
-    
-    NSDecimalNumber *minCost;
-    
-    NSString *currencyCode = [self currencyCode];
-    NSString *region = self.productTemplate.countryMapping[[OLCountry countryForCurrentLocale].codeAlpha3];
-    if (region){
-        if (self.productTemplate.shippingClasses[region].count == 1){
-            fromString = nil;
-        }
-        for (OLShippingClass *shippingClass in self.productTemplate.shippingClasses[region]){
-            NSDecimalNumber *cost = [NSDecimalNumber decimalNumberWithDecimal:[shippingClass.costs[currencyCode] decimalValue]];
-            if (!minCost || [minCost compare:cost] == NSOrderedDescending){
-                minCost = cost;
-            }
-        }
-        
-        if (minCost){
-            if (shippingLabel){
-                s = [s stringByAppendingString:shippingLabel];
-                shippingLabel = nil;
-            }
-            
-            if (fromString){
-                s = [s stringByAppendingString: [NSString stringWithFormat:@"%@ %@\n\n", fromString, [minCost formatCostForCurrencyCode:currencyCode]]];
-            }
-            else{
-                s = [s stringByAppendingString: [NSString stringWithFormat:@"%@\n\n", [minCost formatCostForCurrencyCode:currencyCode]]];
-            }
-        }
-    }
-    
     //Add quality guarantee
     s = [s stringByAppendingString:[OLKitePrintSDK qualityGuaranteeString]];
     return s;
