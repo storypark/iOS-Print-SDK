@@ -54,7 +54,15 @@ BOOL _inEurope;
 }
 
 + (OLCountry *)countryForCurrentLocale {
-    return [OLCountry countryForCode: @"USA"];
+    NSString *countryCode = [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
+    OLCountry *country = [OLCountry countryForCode:countryCode];
+    
+    if (country == nil) {
+        // fallback to US
+        return [OLCountry countryForCode:@"USA"];
+    }
+    
+    return country;
 }
 
 + (OLCountry *)countryForName:(NSString *)name {
