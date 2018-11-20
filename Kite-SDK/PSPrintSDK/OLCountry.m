@@ -28,11 +28,16 @@
 //
 
 #import "OLCountry.h"
+#import "OLKitePrintSDK.h"
 
 @interface OLCountry () {
 BOOL _inEurope;
 }
 
+@end
+
+@interface OLKitePrintSDK (Private)
++ (NSString *_Nullable)lockedCurrencyCode;
 @end
 
 @implementation OLCountry
@@ -54,15 +59,28 @@ BOOL _inEurope;
 }
 
 + (OLCountry *)countryForCurrentLocale {
-    NSString *countryCode = [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
-    OLCountry *country = [OLCountry countryForCode:countryCode];
+    // If there is a valid ISO 4217 currency code set in the SDK config
+    // return a country that is related to that (actual country shouldn't
+    // matter too much as it's actually going to use this for it's currency code anyway)
+    NSString *const lockedCurrencyCode = OLKitePrintSDK.lockedCurrencyCode;
+    if (lockedCurrencyCode.length > 0) {
+        OLCountry *const country = [OLCountry countryForCurrencyCode:lockedCurrencyCode];
+        if (!country) {
+            return [OLCountry countryForCode:@"USA"];
+        }
+        return country;
+    } else {
     
-    if (country == nil) {
-        // fallback to US
-        return [OLCountry countryForCode:@"USA"];
+        NSString *countryCode = [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
+        OLCountry *country = [OLCountry countryForCode:countryCode];
+        
+        if (country == nil) {
+            // fallback to US
+            return [OLCountry countryForCode:@"USA"];
+        }
+        
+        return country;
     }
-    
-    return country;
 }
 
 + (OLCountry *)countryForName:(NSString *)name {
@@ -81,6 +99,18 @@ BOOL _inEurope;
     NSArray *countries = [OLCountry countries];
     for (OLCountry *country in countries) {
         if ([country.codeAlpha2 isEqualToString:code] || [country.codeAlpha3 isEqualToString:code]) {
+            return country;
+        }
+    }
+    
+    return nil;
+}
+
++ (OLCountry *)countryForCurrencyCode:(NSString *)currencyCode {
+    currencyCode = [currencyCode uppercaseString];
+    NSArray *countries = [OLCountry countries];
+    for (OLCountry *country in countries) {
+        if ([country.currencyCode isEqualToString:currencyCode]) {
             return country;
         }
     }

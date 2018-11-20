@@ -61,6 +61,8 @@ static NSString *instagramClientID = nil;
 static NSString *instagramSecret = nil;
 static NSString *instagramRedirectURI = nil;
 
+static NSString *lockedCurrencyCode = nil;
+
 @interface OLPrintOrder ()
 - (void)saveOrder;
 @end
@@ -202,6 +204,14 @@ static NSString *instagramRedirectURI = nil;
 
 + (BOOL)allowsImageZooming{
     return allowImageZooming;
+}
+
++ (void)setLockedCurrencyCode:(NSString *_Nullable) currencyCode {
+    lockedCurrencyCode = currencyCode;
+}
+
++ (NSString *_Nullable)lockedCurrencyCode {
+    return lockedCurrencyCode;
 }
 
 #pragma mark - Internal

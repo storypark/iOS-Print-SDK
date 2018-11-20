@@ -140,4 +140,11 @@
  */
 + (void)setAllowsImageZooming:(BOOL)allowZoom;
 
+/**
+ *  Force the SDK to overide the current locale and display all prices in this currency
+ *
+ *  @param currencyCode String representing an ISO 4217 currency code
+ */
++ (void)setLockedCurrencyCode:(NSString *_Nullable) currencyCode;
+
 @end
