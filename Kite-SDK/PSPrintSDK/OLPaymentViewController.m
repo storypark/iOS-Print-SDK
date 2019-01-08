@@ -630,7 +630,7 @@ UIActionSheetDelegate, UITextFieldDelegate, UINavigationControllerDelegate, UITa
         if (self.printOrder.jobs.count == 0){
             [self.totalCostActivityIndicator stopAnimating];
             [self.paymentButton2 setTitle:@"0.00" forState:UIControlStateNormal];
-            self.shippingCostLabel.text = [[NSDecimalNumber decimalNumberWithString:@"0.00"] formatCostForCurrencyCode:[[OLCountry countryForCurrentLocale] currencyCode]];
+            self.shippingCostLabel.text = [[NSDecimalNumber decimalNumberWithString:@"0.00"] formatISOCostForCurrencyCode:[[OLCountry countryForCurrentLocale] currencyCode]];
             self.promoCodeCostLabel.text = @"";
             return;
         }
@@ -655,7 +655,7 @@ UIActionSheetDelegate, UITextFieldDelegate, UINavigationControllerDelegate, UITa
             } completion:^(BOOL finished){}];
         }
         else {
-            [self.paymentButton2 setTitle:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"Pay %@", @"KitePrintSDK", [OLKiteUtils kiteLocalizationBundle], @"Pay [$10.00]"), [[cost totalCostInCurrency:self.printOrder.currencyCode] formatCostForCurrencyCode:self.printOrder.currencyCode]] forState:UIControlStateNormal];
+            [self.paymentButton2 setTitle:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"Pay %@", @"KitePrintSDK", [OLKiteUtils kiteLocalizationBundle], @"Pay [$10.00]"), [[cost totalCostInCurrency:self.printOrder.currencyCode] formatISOCostForCurrencyCode:self.printOrder.currencyCode]] forState:UIControlStateNormal];
             
             self.paymentMethodBottomCon.constant = 2;
             if (selectedPaymentMethod == kOLPaymentMethodApplePay){
@@ -681,7 +681,7 @@ UIActionSheetDelegate, UITextFieldDelegate, UINavigationControllerDelegate, UITa
             shippingCostString = NSLocalizedStringFromTableInBundle(@"FREE", @"KitePrintSDK", [OLKiteUtils kiteLocalizationBundle], @"Free, no cost");
         }
         else{
-            shippingCostString = [shippingCost formatCostForCurrencyCode:self.printOrder.currencyCode];
+            shippingCostString = [shippingCost formatISOCostForCurrencyCode:self.printOrder.currencyCode];
         }
         
         [UIView animateWithDuration:shouldAnimate ? 0.1 : 0 animations:^{
@@ -702,7 +702,7 @@ UIActionSheetDelegate, UITextFieldDelegate, UINavigationControllerDelegate, UITa
                 self.promoCodeCostLabel.text = nil;
             }
             else{
-                self.promoCodeCostLabel.text = [NSString stringWithFormat:@"-%@", [promoCost formatCostForCurrencyCode:self.printOrder.currencyCode]];
+                self.promoCodeCostLabel.text = [NSString stringWithFormat:@"-%@", [promoCost formatISOCostForCurrencyCode:self.printOrder.currencyCode]];
             }
             [UIView animateWithDuration:0.1 animations:^{
                 self.shippingCostLabel.alpha = 1;

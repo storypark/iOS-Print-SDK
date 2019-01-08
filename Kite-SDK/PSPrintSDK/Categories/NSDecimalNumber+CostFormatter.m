@@ -39,4 +39,11 @@
     return [formatter stringFromNumber:self];
 }
 
+- (NSString *)formatISOCostForCurrencyCode:(NSString *)currencyCode{
+    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+    [formatter setNumberStyle:NSNumberFormatterCurrencyISOCodeStyle];
+    [formatter setCurrencyCode:currencyCode];
+    return [formatter stringFromNumber:self];
+}
+
 @end

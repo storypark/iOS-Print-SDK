@@ -32,5 +32,6 @@
 @interface NSDecimalNumber (CostFormatter)
 
 - (NSString *)formatCostForCurrencyCode:(NSString *)currencyCode;
+- (NSString *)formatISOCostForCurrencyCode:(NSString *)currencyCode;
 
 @end

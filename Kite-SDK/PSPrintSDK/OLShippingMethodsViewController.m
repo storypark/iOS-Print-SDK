@@ -138,7 +138,7 @@
     else{
         [(UILabel *)[cell viewWithTag:20] setText:shippingClass.displayName];
     }
-    [(UILabel *)[cell viewWithTag:30] setText:[[printOrder costForShippingMethodName:shippingClass.className forJobs:@[job]] formatCostForCurrencyCode:printOrder.currencyCode]];
+    [(UILabel *)[cell viewWithTag:30] setText:[[printOrder costForShippingMethodName:shippingClass.className forJobs:@[job]] formatISOCostForCurrencyCode:printOrder.currencyCode]];
     [(UILabel *)[cell viewWithTag:40] setText:[printOrder deliveryEstimatedDaysStringForShippingMethodName:shippingClass.className forJobs:@[job]]];
     
     return cell;

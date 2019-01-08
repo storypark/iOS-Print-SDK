@@ -69,7 +69,7 @@ static NSString *const kKeyLineItemShippingCosts = @"ly.kite.iossdk.kKeyLineItem
         return NSLocalizedStringFromTableInBundle(@"FREE", @"KitePrintSDK", [OLKiteUtils kiteLocalizationBundle], @"Free, no cost");
     } else {
         NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-        [formatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+        [formatter setNumberStyle:NSNumberFormatterCurrencyISOCodeStyle];
         [formatter setCurrencyCode:currencyCode];
         return [formatter stringFromNumber:cost];
     }
@@ -81,7 +81,7 @@ static NSString *const kKeyLineItemShippingCosts = @"ly.kite.iossdk.kKeyLineItem
         return NSLocalizedStringFromTableInBundle(@"FREE", @"KitePrintSDK", [OLKiteUtils kiteLocalizationBundle], @"Free, no cost");
     } else {
         NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-        [formatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+        [formatter setNumberStyle:NSNumberFormatterCurrencyISOCodeStyle];
         [formatter setCurrencyCode:currencyCode];
         return [formatter stringFromNumber:cost];
     }
