@@ -3,7 +3,7 @@
 ![Kite](Kite-SDK/docs/kite.png)
 
 ![Platform](https://img.shields.io/badge/platform-iOS-lightgrey.svg)
-![CocoaPods Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+![Cocoapods](https://img.shields.io/cocoapods/v/Kite-Print-SDK.svg)
 [![Twitter](https://img.shields.io/badge/twitter-@kite_ly-yellow.svg?style=flat)](http://twitter.com/kite_ly)
 
 The Kite SDK makes it easy to add print on demand functionality to your app.
@@ -40,14 +40,14 @@ Use our SDK to unlock hidden revenue streams and add value for your users. *In u
 
 ## Requirements
 
-* Xcode 9.3
-* iOS 9.0+ target deployment
+* Xcode 10.2
+* iOS 10.0+ target deployment
 
 ## Installation
 
 ### CocoaPods
 
-[CocoaPods](http://cocoapods.org) is a dependency manager for iOS, which automates and simplifies the process of using 3rd-party libraries like the Kite SDK in your projects. If you're using it just add the following to your Podfile:
+If you're using [CocoaPods](http://cocoapods.org) just add the following to your Podfile:
 
 ```ruby
 pod "Kite-Print-SDK"
@@ -83,17 +83,59 @@ import KiteSDK
 
 Objective-C:
 ```obj-c
-[OLKitePrintSDK setAPIKey:@"YOUR_API_KEY" withEnvironment:kOLKitePrintSDKEnvironmentLive]; //Or kOLKitePrintSDKEnvironmentSandbox for testing
+[OLKitePrintSDK setAPIKey:@"YOUR_API_KEY" withEnvironment:OLKitePrintSDKEnvironmentLive]; //Or OLKitePrintSDKEnvironmentSandbox for testing
 ```
 Swift:
 ```swift
-OLKitePrintSDK.setAPIKey("a45bf7f39523d31aa1ca4ecf64d422b4d810d9c4", with: .live) //Or .sandbox for testing
+OLKitePrintSDK.setAPIKey("YOUR_API_KEY", with: .live) //Or .sandbox for testing
 ```
-* **Step 3:** Create and present Kite:
+* **Step 3:** Set up 3D Secure 2 payments:
+
+Read about SCA (Strong Customer Authentication) requirements [here](https://stripe.com/gb/guides/strong-customer-authentication).
+
+Add a URL Scheme to your info.plist:
+```
+<key>CFBundleURLTypes</key>
+<array>
+	<dict>
+		<key>CFBundleURLSchemes</key>
+		<array>
+			<string>myappname123456</string>
+		</array>
+	</dict>
+</array>
+```
+
+Pass the URL Scheme you defined to the Kite SDK:
 
 Objective-C:
 ```obj-c
-OLKiteViewController *vc = [[OLKiteViewController alloc] initWithAssets:@[[OLAsset assetWithURL:[NSURL URLWithString:@"http://psps.s3.amazonaws.com/sdk_static/4.jpg"]]]];
+[OLKitePrintSDK setUrlScheme:@"myappname123456"];
+```
+Swift:
+```swift
+OLKitePrintSDK.urlScheme = "myappname123456"
+```
+
+Implement the following method in your app delegate:
+
+Objective-C
+```obj-c
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+	return [OLKitePrintSDK handleUrlCallBack:url];   
+}
+```
+Swift:
+```swift
+func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+   	return OLKitePrintSDK.handleUrlCallBack(with: url)
+}
+```
+* **Step 4:** Create and present Kite:
+
+Objective-C:
+```obj-c
+OLKiteViewController *vc = [[OLKiteViewController alloc] initWithAssets:@[[OLAsset assetWithURL:[NSURL URLWithString:@"https://psps.s3.amazonaws.com/sdk_static/4.jpg"]]]];
 [self presentViewController:vc animated:YES completion:NULL];
 ```
 Swift:
@@ -101,7 +143,7 @@ Swift:
 let kiteViewController = OLKiteViewController.init(assets: [OLAsset(url: URL(string: "http://psps.s3.amazonaws.com/sdk_static/4.jpg"))])
 present(kiteViewController!, animated: true, completion: nil)
 ```
-* **Step 4:**: 🎉Profit🎉
+* **Step 5:**: 🎉Profit🎉
 
 💰💵💶💷💴
 
@@ -178,10 +220,6 @@ Logging in to our [Developer Dashboard](https://www.kite.ly) allow's you to dyna
 ## ApplePay
 See our [ApplePay setup documentation](Kite-SDK/docs/applepay.md) if you want to enable checkout via ApplePay.
 
-## Push Notifications
-
-Push notifications are a powerful marketing tool that if used effectively can increase both user engagement and customer life time value by driving more sales within your application. Kite supports sending push notifications to your customers, see our [Push Notification setup documentation](Kite-SDK/docs/push_notifications.md).
-
 ## SDK Entry Points
 Depending on your use case you might want to launch to a specific product, or even bypass the product selection/creation process entirely and jump straight to the checkout/payment journey. See our [SDK entry point documentation](Kite-SDK/docs/entry_points.md) for more details.
 
@@ -205,5 +243,4 @@ You can optionally offer print-at-home functionality by enabling the HP Print SD
 The iOS Print SDK uses software created by the Open Source community, you can find a full list of acknowledgements [here](https://kite.uservoice.com/knowledgebase/articles/1141681-open-source).
 
 ## License
-
 Kite iOS Print SDK is available under a modified MIT license. See the [LICENSE](Kite-SDK/LICENSE) file for more info.

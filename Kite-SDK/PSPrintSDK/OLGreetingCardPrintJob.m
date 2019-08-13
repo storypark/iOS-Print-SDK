@@ -55,7 +55,6 @@ static NSString *const kKeyExtraCopies = @"co.oceanlabs.pssdk.kKeyExtraCopies";
 @property (strong, nonatomic) PhotobookAsset *insideRightPhotobookAsset;
 @property (strong, nonatomic) PhotobookAsset *insideLeftPhotobookAsset;
 @property (nonatomic, copy) NSString *message;
-@property (strong, nonatomic) NSMutableDictionary *options;
 
 @end
 
@@ -64,16 +63,7 @@ static NSString *const kKeyExtraCopies = @"co.oceanlabs.pssdk.kKeyExtraCopies";
 @synthesize uuid;
 @synthesize extraCopies;
 
--(NSMutableDictionary *) options{
-    if (!_options){
-        _options = [[NSMutableDictionary alloc] init];
-    }
-    return _options;
-}
-
-- (void)setValue:(NSString *)value forOption:(NSString *)option{
-    self.options[option] = value;
-}
+- (void)setValue:(NSString *)value forOption:(NSString *)option {}
 
 - (id)initWithTemplateId:(NSString *)templateId frontImageOLAsset:(OLAsset *)frontImageAsset backImageOLAsset:(OLAsset *)backImageAsset insideRightImageAsset:(OLAsset *)insideRightImageAsset insideLeftImageAsset:(OLAsset *)insideLeftImageAsset {
     if (self = [super init]) {
@@ -167,7 +157,7 @@ static NSString *const kKeyExtraCopies = @"co.oceanlabs.pssdk.kKeyExtraCopies";
         assets[@"front_image"] = self.frontPhotobookAsset.uploadUrl;
     }
     else{
-        assets[@"front_image"] = [NSString stringWithFormat:@"%lld", self.frontImageAsset.assetId];
+        assets[@"front_image"] = @(self.frontImageAsset.assetId);
     }
     
     if (self.backImageAsset){
@@ -178,7 +168,7 @@ static NSString *const kKeyExtraCopies = @"co.oceanlabs.pssdk.kKeyExtraCopies";
             assets[@"back_image"] = self.backPhotobookAsset.uploadUrl;
         }
         else{
-            assets[@"back_image"] = [NSString stringWithFormat:@"%lld", self.backImageAsset.assetId];
+            assets[@"back_image"] = @(self.backImageAsset.assetId);
         }
     }
     if (self.insideRightImageAsset){
@@ -189,7 +179,7 @@ static NSString *const kKeyExtraCopies = @"co.oceanlabs.pssdk.kKeyExtraCopies";
             assets[@"inside_right_image"] = self.insideRightPhotobookAsset.uploadUrl;
         }
         else{
-            assets[@"inside_right_image"] = [NSString stringWithFormat:@"%lld", self.insideRightImageAsset.assetId];
+            assets[@"inside_right_image"] = @(self.insideRightImageAsset.assetId);
         }
     }
     if (self.insideLeftImageAsset){
@@ -200,7 +190,7 @@ static NSString *const kKeyExtraCopies = @"co.oceanlabs.pssdk.kKeyExtraCopies";
             assets[@"inside_left_image"] = self.insideLeftPhotobookAsset.uploadUrl;
         }
         else{
-            assets[@"inside_left_image"] = [NSString stringWithFormat:@"%lld", self.insideLeftImageAsset.assetId];
+            assets[@"inside_left_image"] = @(self.insideLeftImageAsset.assetId);
         }
     }
     
@@ -214,8 +204,6 @@ static NSString *const kKeyExtraCopies = @"co.oceanlabs.pssdk.kKeyExtraCopies";
     if (self.message) {
         [json setObject:self.message forKey:@"message"];
     }
-    
-    json[@"options"] = self.options;
     
     return json;
 }
@@ -234,7 +222,6 @@ static NSString *const kKeyExtraCopies = @"co.oceanlabs.pssdk.kKeyExtraCopies";
     if (self.insideLeftImageAsset) val *= [self.insideLeftImageAsset hash];
     if (self.message && [self.message hash] > 0) val *= [self.message hash];
     if (self.extraCopies) val *= self.extraCopies+1;
-    val = 18 * val + [self.options hash];
     val = 41 * val + [self.uuid hash];
     val = 42 * val + [self.selectedShippingMethod hash];
     return val;
@@ -256,7 +243,6 @@ static NSString *const kKeyExtraCopies = @"co.oceanlabs.pssdk.kKeyExtraCopies";
     if (self.insideRightImageAsset) result &= [self.insideRightImageAsset isEqual:printJob.insideRightImageAsset];
     if (self.insideLeftImageAsset) result &= [self.insideLeftImageAsset isEqual:printJob.insideLeftImageAsset];
     if (self.message) result &= [self.message isEqual:printJob.message];
-    result &= [self.options isEqualToDictionary:printJob.options];
     if (self.selectedShippingMethod) result &= [self.selectedShippingMethod isEqual:printJob.selectedShippingMethod];
     return result;
 }
@@ -270,7 +256,6 @@ static NSString *const kKeyExtraCopies = @"co.oceanlabs.pssdk.kKeyExtraCopies";
     [aCoder encodeObject:self.insideLeftImageAsset forKey:kKeyInsideLeftImage];
     [aCoder encodeObject:self.message forKey:kKeyMessage];
     [aCoder encodeObject:self.templateId forKey:kKeyProductTemplateId];
-    [aCoder encodeObject:self.options forKey:kKeyPrintJobOptions];
     [aCoder encodeInteger:self.extraCopies forKey:kKeyExtraCopies];
     [aCoder encodeObject:self.uuid forKey:kKeyUUID];
     [aCoder encodeObject:self.selectedShippingMethod forKey:@"selectedShippingMethod"];
@@ -300,7 +285,6 @@ static NSString *const kKeyExtraCopies = @"co.oceanlabs.pssdk.kKeyExtraCopies";
         if (!self.template) {
             return nil;
         }
-        self.options = [aDecoder decodeObjectForKey:kKeyPrintJobOptions];
         self.extraCopies = [aDecoder decodeIntegerForKey:kKeyExtraCopies];
         self.uuid = [aDecoder decodeObjectForKey:kKeyUUID];
         self.selectedShippingMethod = [aDecoder decodeObjectForKey:@"selectedShippingMethod"];

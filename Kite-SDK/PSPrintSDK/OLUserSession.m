@@ -139,7 +139,7 @@
         }
     }
     if ((cleanupOptions & OLUserSessionCleanupOptionBasket) == OLUserSessionCleanupOptionBasket){
-        [[Checkout shared] clearBasketOrder];
+        [[PhotobookSDK shared] clearBasketOrder];
     }
     if ((cleanupOptions & OLUserSessionCleanupOptionPayment) == OLUserSessionCleanupOptionPayment){
         
@@ -198,17 +198,6 @@
     
     free(answer);
     return results;
-}
-
-- (void)wantsToDismiss:(UIViewController *)viewController {
-    if (!self.kiteVc){
-        [viewController dismissViewControllerAnimated:YES completion:NULL];
-    }
-    else if ([viewController isKindOfClass:[NSClassFromString(@"Photobook.PhotobookViewController") class]]){
-        [viewController.navigationController popViewControllerAnimated:YES];
-    } else {
-        [viewController.navigationController popToRootViewControllerAnimated:YES];
-    }
 }
 
 - (id<PhotobookAssetPicker>) assetPickerViewController {

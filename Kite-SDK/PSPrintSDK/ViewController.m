@@ -37,6 +37,8 @@ static NSString *const kAPIKeyLive = @"REPLACE_WITH_YOUR_API_KEY"; // replace wi
 static NSString *const kApplePayMerchantIDKey = @"merchant.ly.kite.sdk"; // Replace with your merchant ID
 static NSString *const kApplePayBusinessName = @"Kite.ly"; //Replace with your business name
 
+static NSString *const kURLScheme = @"kitely";
+
 #import "ViewController.h"
 #import "OLKitePrintSDK.h"
 #import "OLImageCachingManager.h"
@@ -62,6 +64,7 @@ static NSString *const kApplePayBusinessName = @"Kite.ly"; //Replace with your b
     
     [OLKitePrintSDK setApplePayMerchantID:kApplePayMerchantIDKey];
     [OLKitePrintSDK setApplePayPayToString:kApplePayBusinessName];
+    [OLKitePrintSDK setURLScheme:kURLScheme];
 }
 
 - (BOOL)shouldAutorotate {
@@ -131,13 +134,8 @@ static NSString *const kApplePayBusinessName = @"Kite.ly"; //Replace with your b
     
     [self addCatsAndDogsImagePickersToKite:vc];
     
+    vc.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:vc animated:YES completion:NULL];
-    
-    //Register for push notifications
-    NSUInteger types = (UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge);
-    [[UIApplication sharedApplication] registerUserNotificationSettings:
-     [UIUserNotificationSettings settingsForTypes:types categories:nil]];
-    [[UIApplication sharedApplication] registerForRemoteNotifications];
 }
 - (IBAction)onButtonPrintRemotePhotos:(id)sender {
     if (![self isAPIKeySet]) return;

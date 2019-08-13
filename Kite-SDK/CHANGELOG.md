@@ -1,3 +1,25 @@
+## 8.1.0
+- Added support for 3DS2 payments
+- Fixes and improvements
+
+### 8.0.1
+- Updated to the latest Photobook
+
+# 8.0.0
+- Minimum supported iOS is now 10.0
+- Updated to Photobook 2.0.0
+- The checkout now uses Stripe's standard integration and accepts a pre-populated delivery address
+- Polaroid jobs now need to use a specific class method in OLPrintJob
+
+### 7.0.3
+- Updated to the latest Photobook
+
+### 7.0.2
+- Fixed crash if PayPal is not installed
+
+### 7.0.1
+- Updated to the latest Photobook
+
 # 7.0.0
 - New: Photobook building experience
 - New: Checkout experience

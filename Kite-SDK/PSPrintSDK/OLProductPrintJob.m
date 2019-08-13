@@ -38,12 +38,10 @@ static NSString *const kKeyProductTemplateId = @"co.oceanlabs.pssdk.kKeyProductT
 static NSString *const kKeyImages = @"co.oceanlabs.pssdk.kKeyImages";
 static NSString *const kKeyUUID = @"co.oceanlabs.pssdk.kKeyUUID";
 static NSString *const kKeyExtraCopies = @"co.oceanlabs.pssdk.kKeyExtraCopies";
+static NSString *const kKeyTemplateShippingMethods = @"co.oceanlabs.pssdk.kKeyTemplateShippingMethods";
+static NSString *const kKeyTemplateCountryToRegionMapping = @"co.oceanlabs.pssdk.kKeyTemplateCountryToRegionMapping";
 static NSString *const kKeyProductPringJobAddress = @"co.oceanlabs.pssdk.kKeyProductPringJobAddress";
 static NSString *const kKeyProductPrintJobOptions = @"co.oceanlabs.pssdk.kKeyProductPrintJobOptions";
-
-static id stringOrEmptyString(NSString *str) {
-    return str ? str : @"";
-}
 
 @interface OLProductPrintJob ()
 @property (nonatomic, strong) NSString *templateId;
@@ -160,7 +158,6 @@ static id stringOrEmptyString(NSString *str) {
 - (NSDictionary *)jsonRepresentation {
     NSMutableArray *assets = [[NSMutableArray alloc] init];
     NSMutableArray *pdfs = [[NSMutableArray alloc] init];
-    NSMutableArray *borderTextArray = [[NSMutableArray alloc] init];
     
     for (NSUInteger i = 0; i < self.assetsForUploading.count; i++) {
         OLAsset *asset = self.assetsForUploading[i];
@@ -168,15 +165,13 @@ static id stringOrEmptyString(NSString *str) {
 //            [pdfs addObject:[NSString stringWithFormat:@"%lld", asset.assetId]];
 //        }
 //        else{
+        for (NSInteger j = 0; j <= asset.extraCopies; j++) {
             if (i < self.assetsToUpload.count && self.assetsToUpload[i].uploadUrl) {
                 [assets addObject:self.assetsToUpload[i].uploadUrl];
             } else {
-                [assets addObject:[NSString stringWithFormat:@"%lld", asset.assetId]];
+                [assets addObject:@(asset.assetId)];
             }
-            
-            NSString *borderText = asset.edits.bottomBorderText.text;
-            [borderTextArray addObject:stringOrEmptyString(borderText)];
-            
+        }
 //        }
     }
     
@@ -186,11 +181,10 @@ static id stringOrEmptyString(NSString *str) {
     if (pdfs.count > 0){
         json[@"pdf"] = [pdfs firstObject];
     }
-    json[@"frame_contents"] = @{};
-    
-    NSMutableDictionary *options = [self.options mutableCopy];
-    options[@"polaroid_text"] = borderTextArray;
-    json[@"options"] = options;
+
+    if (self.options != nil && self.options.count > 0) {
+        json[@"options"] = self.options;
+    }
     
     json[@"job_id"] = [self uuid];
     json[@"multiples"] = [NSNumber numberWithInteger:self.extraCopies + 1];
@@ -239,8 +233,6 @@ static id stringOrEmptyString(NSString *str) {
     }
     OLProductPrintJob* printJob = (OLProductPrintJob*)object;
     
-    
-    
     return [self.templateId isEqual:printJob.templateId] && [self.assetsForUploading isEqualToArray:printJob.assetsForUploading] && [self.options isEqualToDictionary:printJob.options] && (!self.selectedShippingMethod || [self.selectedShippingMethod isEqual:printJob.selectedShippingMethod]);
 }
 
@@ -249,6 +241,8 @@ static id stringOrEmptyString(NSString *str) {
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [aCoder encodeObject:self.templateId forKey:kKeyProductTemplateId];
+    [aCoder encodeObject:self.template.availableShippingMethods forKey:kKeyTemplateShippingMethods];
+    [aCoder encodeObject:self.template.countryToRegionMapping forKey:kKeyTemplateCountryToRegionMapping];
     [aCoder encodeObject:self.assetsForUploading forKey:kKeyImages];
     [aCoder encodeObject:self.uuid forKey:kKeyUUID];
     [aCoder encodeInteger:self.extraCopies forKey:kKeyExtraCopies];
@@ -262,6 +256,8 @@ static id stringOrEmptyString(NSString *str) {
         if (!self.template) {
             return nil;
         }
+        self.template.availableShippingMethods = [aDecoder decodeObjectForKey:kKeyTemplateShippingMethods];
+        self.template.countryToRegionMapping = [aDecoder decodeObjectForKey:kKeyTemplateCountryToRegionMapping];
         self.assetsForUploading = [aDecoder decodeObjectForKey:kKeyImages];
         self.assetsToUpload = [OLAsset photobookAssetsFromAssets:self.assetsForUploading];
         self.uuid = [aDecoder decodeObjectForKey:kKeyUUID];
