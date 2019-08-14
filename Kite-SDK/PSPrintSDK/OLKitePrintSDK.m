@@ -53,6 +53,8 @@ static NSString *instagramClientID = nil;
 static NSString *instagramSecret = nil;
 static NSString *instagramRedirectURI = nil;
 
+static NSString *lockedCurrencyCode = nil;
+
 @implementation OLKitePrintSDK
 
 + (void)setUseStaging:(BOOL)staging {
